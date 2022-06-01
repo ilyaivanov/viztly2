@@ -55,26 +55,7 @@ const invertedMass = 0.28;
 //   return spring;
 // }
 
-export const createAnimatedColor = (initialValue: string): AnimatedColor => ({
-  millisecondsEllapsed: 0,
-  currentValue: parseHex(initialValue),
-  startingColor: parseHex(initialValue),
-  targetColor: parseHex(initialValue),
-  isAnimating: false,
-  tick: onColorTick,
-});
-
-export const getHexColor = (v: number) => "#" + v.toString(16).padStart(6, "0");
-
-const parseHex = (s: string): number => parseInt(s.slice(1), 16);
-
-export const switchColorTo = (v: AnimatedColor, target: string) => {
-  v.targetColor = parseHex(target);
-  v.startingColor = v.currentValue;
-  v.millisecondsEllapsed = 0;
-  v.isAnimating = true;
-  addAnimation(v);
-};
+// Animating Number
 
 export const createAnimatedNumber = (initialValue: number): AnimatedNumber => ({
   last: initialValue,
@@ -98,7 +79,7 @@ export const appendTo = (v: AnimatedNumber, delta: number) => {
   addAnimation(v);
 };
 
-type AnimatedNumber = AnimatedValue & {
+export type AnimatedNumber = AnimatedValue & {
   last: number;
   target: number;
   current: number;
@@ -125,12 +106,35 @@ function onNumberTick(this: AnimatedNumber, deltaTime: number) {
   }
 }
 
+// Animating Color
+
 const transitionTimeMs = 200;
 type AnimatedColor = AnimatedValue & {
   millisecondsEllapsed: number;
   targetColor: number;
   startingColor: number;
   currentValue: number;
+};
+
+export const createAnimatedColor = (initialValue: string): AnimatedColor => ({
+  millisecondsEllapsed: 0,
+  currentValue: parseHex(initialValue),
+  startingColor: parseHex(initialValue),
+  targetColor: parseHex(initialValue),
+  isAnimating: false,
+  tick: onColorTick,
+});
+
+export const getHexColor = (v: number) => "#" + v.toString(16).padStart(6, "0");
+
+const parseHex = (s: string): number => parseInt(s.slice(1), 16);
+
+export const switchColorTo = (v: AnimatedColor, target: string) => {
+  v.targetColor = parseHex(target);
+  v.startingColor = v.currentValue;
+  v.millisecondsEllapsed = 0;
+  v.isAnimating = true;
+  addAnimation(v);
 };
 
 function onColorTick(this: AnimatedColor, deltaTimeMs: number) {
@@ -165,7 +169,7 @@ function onColorTick(this: AnimatedColor, deltaTimeMs: number) {
  *
  * @returns {Number}
  */
-function lerpColor(a: number, b: number, amount: number) {
+export function lerpColor(a: number, b: number, amount: number) {
   const ar = a >> 16,
     ag = (a >> 8) & 0xff,
     ab = a & 0xff,
@@ -178,50 +182,3 @@ function lerpColor(a: number, b: number, amount: number) {
 
   return (rr << 16) + (rg << 8) + (rb | 0);
 }
-
-// export class AnimatedNumber implements AnimatedValue {
-//   isAnimating: boolean = false;
-
-//   public last: number;
-
-//   // { stiffness: 0.02, damping: 2, invertedMass: 0.2 },
-//   stiffness = 0.02;
-//   damping = 2.5;
-//   invertedMass = 0.28;
-//   public target: number;
-
-//   constructor(public current: number) {
-//     this.last = current;
-//     this.target = current;
-//   }
-
-//   private onDone: (() => void) | undefined;
-//   switchTo = (to: number, onDoneCb?: () => void) => {
-//     this.last = this.current;
-//     this.current = this.current;
-//     this.target = to;
-
-//     this.onDone = onDoneCb;
-//     this.isAnimating = true;
-//     engine.addAnimation(this);
-//   };
-
-//   tick = (deltaTime: number) => {
-//     const { current, target, last, stiffness, damping, invertedMass } = this;
-//     const delta = target - current;
-//     const velocity = (current - last) / deltaTime;
-//     const spring = stiffness * delta;
-//     const damper = damping * velocity;
-//     const acceleration = (spring - damper) * invertedMass;
-//     const d = (velocity + acceleration) * deltaTime;
-
-//     if (Math.abs(d) < precision && Math.abs(delta) < precision) {
-//       this.onDone && this.onDone();
-//       this.isAnimating = false;
-//       this.current = target;
-//     } else {
-//       this.last = this.current;
-//       this.current += d;
-//     }
-//   };
-// }
