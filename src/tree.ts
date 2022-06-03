@@ -7,7 +7,7 @@ export const getItemByName = (tree: Tree, name: string): Item => {
   return itemFound;
 };
 
-const forEachChild = (item: Item, cb: A2<Item, Item>) => {
+export const forEachChild = (item: Item, cb: A2<Item, Item>) => {
   const traverse = (children: Item[]) => {
     children.forEach((c) => {
       cb(c, item);
@@ -16,5 +16,11 @@ const forEachChild = (item: Item, cb: A2<Item, Item>) => {
   };
   traverse(item.children);
 };
-
+export const forEachParent = (item: Item, cb: A1<Item>) => {
+  let parent = item.parent;
+  while (parent) {
+    cb(parent);
+    parent = parent.parent;
+  }
+};
 const hasChildren = (item: Item) => item.children.length > 0;

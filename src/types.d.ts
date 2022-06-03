@@ -4,6 +4,7 @@ type Item = {
   children: Item[];
   isOpen: boolean;
   view?: "tree" | "board" | "gallery";
+  galleryOptions?: GalleryOptions;
 
   type: ItemType;
   // videoId?: string;
@@ -34,6 +35,12 @@ type ItemView = {
   x: AnimatedNumber;
   y: AnimatedNumber;
   item: Item;
+};
+
+type GalleryOptions = {
+  widthInGrid: number;
+  heightInGrid: number;
+  numberOfColumns: number;
 };
 
 // Utility types

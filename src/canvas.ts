@@ -51,6 +51,10 @@ export const initCanvas = () => {
       canvasContext.lineWidth = lineWidth;
       canvasContext.stroke();
     },
+    width: window.innerWidth,
+    height: window.innerHeight,
+
+    htmlContext: canvasContext,
   };
 
   window.ctx = context;
