@@ -1,9 +1,14 @@
+import {
+  init,
+  onArrowDown,
+  onArrowLeft,
+  onArrowRight,
+  onArrowUp,
+  setGalleryColumns,
+} from "./actions";
 import { onEngineTick } from "./animations";
-
-import { createAnimatedNumber } from "./animations";
-import { initCanvas } from "./canvas";
-import { drawGrid, layoutChildren } from "./gridLayout";
-import sp from "./spacings";
+import { initCanvas, onResize } from "./canvas";
+import { drawGrid } from "./gridLayout";
 import { forEachChild, forEachParent, getItemByName } from "./tree";
 import { viewItem } from "./viewItem";
 import viztly from "./viztly.json";
@@ -35,22 +40,14 @@ gallery.galleryOptions = {
 forEachParent(gallery, (i) => (i.isOpen = true));
 gallery.isOpen = true;
 
+tree.selectedItem = gallery;
+
 const app: AppState = {
   views: new Map(),
   tree,
 };
 
-layoutChildren(app.tree.root, 8, 2, (item, gridX, gridY) => {
-  const view: ItemView = {
-    gridX,
-    gridY,
-    x: createAnimatedNumber(gridX * sp.gridSize),
-    y: createAnimatedNumber(gridY * sp.gridSize),
-    item,
-  };
-
-  app.views.set(item, view);
-});
+init(app);
 
 const render = () => {
   window.ctx.clear("#FAF9F7");
@@ -62,8 +59,25 @@ const render = () => {
       tree.selectedItem == item,
       item.parent && app.views.get(item.parent)
     );
+    window.ctx.htmlContext.globalAlpha = 1;
   }
 };
+
+document.addEventListener("keydown", (e) => {
+  if (e.code.startsWith("Digit")) {
+    const number = parseInt(e.code.substring(5));
+    setGalleryColumns(app, app.tree.selectedItem, number);
+    e.preventDefault();
+  }
+  if (e.code === "ArrowDown") onArrowDown(app);
+  else if (e.code === "ArrowUp") onArrowUp(app);
+  else if (e.code === "ArrowRight") onArrowRight(app);
+  else if (e.code === "ArrowLeft") onArrowLeft(app);
+
+  render();
+});
+
+onResize(render);
 
 onEngineTick(render);
 

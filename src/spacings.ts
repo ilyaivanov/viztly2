@@ -10,11 +10,12 @@ export default {
   gridSize: 20,
   lineToCircleDistance: 10 - 3.2,
 
-  galleryImageWidth: 5,
-  galleryImageHeight: 3,
+  galleryImageWidth: 6,
+  galleryImageHeight: 4,
 };
 
 export const colors = {
   lines: "lightGrey",
   gridPoint: "lightGrey",
+  selected: "blue",
 };

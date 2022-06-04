@@ -1,5 +1,10 @@
 import spacings from "./spacings";
 
+let onResizeCb: () => void;
+
+export const onResize = (cb: () => void) => {
+  onResizeCb = cb;
+};
 export const initCanvas = () => {
   const canvas = document.createElement("canvas");
 
@@ -7,6 +12,14 @@ export const initCanvas = () => {
   canvas.height = window.innerHeight;
 
   document.body.appendChild(canvas);
+
+  const onResize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    onResizeCb();
+  };
+
+  window.addEventListener("resize", onResize);
 
   const canvasContext = canvas.getContext("2d")!;
 
@@ -51,6 +64,27 @@ export const initCanvas = () => {
       canvasContext.lineWidth = lineWidth;
       canvasContext.stroke();
     },
+
+    fillRect: (
+      x: number,
+      y: number,
+      w: number,
+      h: number,
+      lineWidth: number,
+      color: string
+    ) => {
+      canvasContext.strokeStyle = color;
+      canvasContext.lineWidth = lineWidth;
+      canvasContext.beginPath();
+      canvasContext.moveTo(x, y);
+
+      canvasContext.lineTo(x + w, y);
+      canvasContext.lineTo(x + w, y + h);
+      canvasContext.lineTo(x, y + h);
+      canvasContext.closePath();
+      canvasContext.stroke();
+    },
+
     width: window.innerWidth,
     height: window.innerHeight,
 

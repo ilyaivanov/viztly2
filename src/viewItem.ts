@@ -12,17 +12,12 @@ export const viewItem = (
   const yOffset = 1;
   const { item } = view;
 
-  const color = isSelected ? "red" : "#000";
+  const color = isSelected ? colors.selected : "#000";
+  window.ctx.htmlContext.globalAlpha = view.opacity.current;
+  if (view.item.view === "gallery" && view.item.isOpen) galleryOutline(view);
 
   if (parentView?.item.view === "gallery") {
-    const { galleryImageHeight, galleryImageWidth, gridSize } = spacings;
-    window.ctx.drawRect(
-      x,
-      y,
-      galleryImageWidth * gridSize,
-      galleryImageHeight * gridSize,
-      "grey"
-    );
+    drawGalleryItem(view, isSelected);
   } else {
     window.ctx.outlineCircle(x, y, 3.2, 1, color);
 
@@ -34,7 +29,6 @@ export const viewItem = (
       else lineBetween(view, parentView);
     }
   }
-  if (view.item.view === "gallery") galleryOutline(view);
 };
 
 //TODO: think about how to animate between lineBetween and boardChildtoParentLine
@@ -48,15 +42,14 @@ const lineBetween = (view1: ItemView, view2: ItemView) => {
   const y2 = view2.y.current + circleRadius + lineToCircleDistance;
 
   const ctx = window.ctx.htmlContext;
-
-  ctx.beginPath();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = colors.lines;
   ctx.lineJoin = "round";
+  ctx.beginPath();
   ctx.moveTo(x1, y1);
   ctx.lineTo(x2, y1);
   ctx.lineTo(x2, y2);
 
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = colors.lines;
   ctx.stroke();
 };
 
@@ -73,15 +66,14 @@ const boardChildtoParentLine = (from: ItemView, to: ItemView) => {
 
   const ctx = window.ctx.htmlContext;
 
-  ctx.beginPath();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = colors.lines;
   ctx.lineJoin = "round";
+  ctx.beginPath();
   ctx.moveTo(x1, y1);
   ctx.lineTo(x1, middleYPoint);
   ctx.lineTo(x2, middleYPoint);
   ctx.lineTo(x2, y2);
-
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = colors.lines;
   ctx.stroke();
 };
 
@@ -107,6 +99,10 @@ const galleryOutline = (itemView: ItemView) => {
   const topLeftEndX = itemView.y.current + textOffsetFromCircleCenter;
 
   const ctx = window.ctx.htmlContext;
+
+  ctx.strokeStyle = colors.lines;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
   ctx.moveTo(topLeftX, topLeftY);
 
   ctx.lineTo(rightX, topRightY);
@@ -115,3 +111,42 @@ const galleryOutline = (itemView: ItemView) => {
   ctx.lineTo(LeftX, topLeftEndX);
   ctx.stroke();
 };
+
+function drawGalleryItem(view: ItemView, isSelected: boolean) {
+  const x = view.x.current;
+  const y = view.y.current;
+
+  const { galleryImageHeight, galleryImageWidth, gridSize } = spacings;
+
+  if (!view.image && view.item.videoId) {
+    view.image = new Image();
+    view.image.src = `https://i.ytimg.com/vi/${view.item.videoId}/default.jpg`;
+  }
+  window.ctx.drawRect(
+    x,
+    y,
+    galleryImageWidth * gridSize,
+    galleryImageHeight * gridSize,
+    colors.lines
+  );
+  if (view.image)
+    window.ctx.htmlContext.drawImage(
+      view.image,
+      0,
+      (youtubeOriginalImageHeight - galleryImageHeight * gridSize) / 2,
+      galleryImageWidth * gridSize,
+      galleryImageHeight * gridSize,
+      x,
+      y,
+      galleryImageWidth * gridSize,
+      galleryImageHeight * gridSize
+      // colors.lines
+    );
+
+  if (isSelected) {
+    const width = galleryImageWidth * gridSize;
+    const height = galleryImageHeight * gridSize;
+    window.ctx.fillRect(x, y, width, height, 2, colors.selected);
+  }
+}
+const youtubeOriginalImageHeight = 90;

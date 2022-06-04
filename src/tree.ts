@@ -16,6 +16,17 @@ export const forEachChild = (item: Item, cb: A2<Item, Item>) => {
   };
   traverse(item.children);
 };
+
+export const forEachOpenChild = (item: Item, cb: A2<Item, Item>) => {
+  const traverse = (children: Item[]) => {
+    children.forEach((c) => {
+      cb(c, item);
+      if (c.isOpen && hasChildren(c)) forEachChild(c, cb);
+    });
+  };
+  traverse(item.children);
+};
+
 export const forEachParent = (item: Item, cb: A1<Item>) => {
   let parent = item.parent;
   while (parent) {

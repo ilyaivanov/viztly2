@@ -72,6 +72,14 @@ export const switchTo = (v: AnimatedNumber, target: number) => {
   addAnimation(v);
 };
 
+export const fromTo = (v: AnimatedNumber, from: number, to: number) => {
+  v.current = from;
+  v.target = to;
+
+  v.isAnimating = true;
+  addAnimation(v);
+};
+
 export const appendTo = (v: AnimatedNumber, delta: number) => {
   v.target += delta;
 
@@ -85,7 +93,7 @@ export type AnimatedNumber = AnimatedValue & {
   current: number;
 };
 
-const precision = 0.1;
+const precision = 0.01;
 
 function onNumberTick(this: AnimatedNumber, deltaTime: number) {
   const { current, target, last } = this;
