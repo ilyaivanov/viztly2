@@ -20,6 +20,10 @@ export const viewItem = (
     drawGalleryItem(view, isSelected);
   } else {
     window.ctx.outlineCircle(x, y, 3.2, 1, color);
+    if (item.children.length > 0) {
+      const filledCircle = isSelected ? colors.selected : "#A39E93";
+      window.ctx.fillCircle(x, y, 3.2, filledCircle);
+    }
 
     window.ctx.fillTextAtMiddle(item.title, x + xOffset, y + yOffset, color);
 

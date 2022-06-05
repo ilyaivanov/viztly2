@@ -3,7 +3,7 @@ interface AnimatedValue {
   tick: (deltaTime: number) => void;
 }
 
-const ANIMATION_SLOW_COEF = 2; // how much times to slow animation
+const ANIMATION_SLOW_COEF = 1; // how much times to slow animation
 
 const currentAnimations: Set<AnimatedValue> = new Set();
 

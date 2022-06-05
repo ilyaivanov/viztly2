@@ -34,7 +34,7 @@ export const onArrowUp = (app: AppState) => {
 
 export const onArrowRight = (app: AppState) => {
   const { tree } = app;
-  if (!tree.selectedItem.isOpen) {
+  if (!tree.selectedItem.isOpen && hasChildren(tree.selectedItem)) {
     tree.selectedItem.isOpen = true;
     animatePositions(app);
     const view = app.views.get(tree.selectedItem);
@@ -62,6 +62,30 @@ export const onArrowLeft = (app: AppState) => {
     animatePositions(app);
   } else if (tree.selectedItem.parent && !isRoot(tree.selectedItem.parent))
     tree.selectedItem = tree.selectedItem.parent;
+};
+
+export const setSelectedAsBoard = (app: AppState) => {
+  app.tree.selectedItem.view = "board";
+  animatePositions(app);
+};
+
+export const setSelectedAsTree = (app: AppState) => {
+  app.tree.selectedItem.view = "tree";
+  animatePositions(app);
+};
+
+export const setSelectedAsGallery = (app: AppState) => {
+  const { selectedItem } = app.tree;
+  selectedItem.view = "gallery";
+
+  if (!selectedItem.galleryOptions)
+    selectedItem.galleryOptions = {
+      heightInGrid: 0,
+      widthInGrid: 0,
+      numberOfColumns: 6,
+    };
+
+  animatePositions(app);
 };
 
 const fadeOut = (app: AppState, item: Item) => {

@@ -64,6 +64,12 @@ export const initCanvas = () => {
       canvasContext.lineWidth = lineWidth;
       canvasContext.stroke();
     },
+    fillCircle: (x: number, y: number, r: number, color: string) => {
+      canvasContext.fillStyle = color;
+      canvasContext.beginPath();
+      canvasContext.arc(x, y, r, 0, 2 * Math.PI);
+      canvasContext.fill();
+    },
 
     fillRect: (
       x: number,
