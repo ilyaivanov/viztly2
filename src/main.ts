@@ -44,10 +44,10 @@ document.addEventListener("keydown", (e) => {
     actions.setGalleryColumns(app, app.tree.selectedItem, number);
     e.preventDefault();
   }
-  if (e.code === "ArrowDown") actions.onArrowDown(app);
-  else if (e.code === "ArrowUp") actions.onArrowUp(app);
-  else if (e.code === "ArrowRight") actions.onArrowRight(app);
-  else if (e.code === "ArrowLeft") actions.onArrowLeft(app);
+  if (e.code === "ArrowDown") actions.onMovement(app, "down");
+  else if (e.code === "ArrowUp") actions.onMovement(app, "up");
+  else if (e.code === "ArrowRight") actions.onMovement(app, "right");
+  else if (e.code === "ArrowLeft") actions.onMovement(app, "left");
   else if (e.code === "KeyG") actions.setSelectedAsGallery(app);
   else if (e.code === "KeyB") actions.setSelectedAsBoard(app);
   else if (e.code === "KeyT") actions.setSelectedAsTree(app);

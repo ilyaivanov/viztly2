@@ -1,4 +1,4 @@
-import { appendTo, createAnimatedNumber, fromTo, switchTo } from "./animations";
+import { appendTo, createAnimatedNumber, switchTo } from "./animations";
 import { layoutChildren } from "./gridLayout";
 import spacings from "./spacings";
 import { forEachOpenChild } from "./tree";
@@ -18,21 +18,29 @@ const createView = (item: Item, gridX: number, gridY: number): ItemView => ({
   opacity: createAnimatedNumber(1),
 });
 
-export const onArrowDown = (app: AppState) => {
+export const onMovement = (app: AppState, direction: Direction) => {
   const { tree } = app;
+  if (isInGallery(tree.selectedItem)) {
+    moveInsideGallery(app, direction);
+  } else {
+    arrowHandlers[direction](app);
+  }
+};
+
+const onArrowDown = ({ tree }: AppState) => {
   const itemBelow = getItemBelow(tree.selectedItem);
 
   if (itemBelow) tree.selectedItem = itemBelow;
 };
 
-export const onArrowUp = (app: AppState) => {
+const onArrowUp = (app: AppState) => {
   const { tree } = app;
   const itemBelow = getItemAbove(tree.selectedItem);
 
   if (itemBelow) tree.selectedItem = itemBelow;
 };
 
-export const onArrowRight = (app: AppState) => {
+const onArrowRight = (app: AppState) => {
   const { tree } = app;
   if (!tree.selectedItem.isOpen && hasChildren(tree.selectedItem)) {
     tree.selectedItem.isOpen = true;
@@ -54,7 +62,7 @@ export const onArrowRight = (app: AppState) => {
     tree.selectedItem = tree.selectedItem.children[0];
 };
 
-export const onArrowLeft = (app: AppState) => {
+const onArrowLeft = (app: AppState) => {
   const { tree } = app;
   if (tree.selectedItem.isOpen) {
     tree.selectedItem.isOpen = false;
@@ -62,6 +70,13 @@ export const onArrowLeft = (app: AppState) => {
     animatePositions(app);
   } else if (tree.selectedItem.parent && !isRoot(tree.selectedItem.parent))
     tree.selectedItem = tree.selectedItem.parent;
+};
+
+const arrowHandlers: Record<Direction, (app: AppState) => void> = {
+  down: onArrowDown,
+  left: onArrowLeft,
+  right: onArrowRight,
+  up: onArrowUp,
 };
 
 export const setSelectedAsBoard = (app: AppState) => {
@@ -100,6 +115,35 @@ const fadeIn = (view: ItemView) => {
   // // view.x.opacity.current = 0;
   // appendTo(view.x, 10);
   // fromTo(view.opacity, 0, 1);
+};
+
+type Direction = "up" | "down" | "left" | "right";
+const moveInsideGallery = (app: AppState, direction: Direction) => {
+  const { selectedItem } = app.tree;
+  if (selectedItem.parent) {
+    const galleryOptions = selectedItem.parent.galleryOptions;
+    if (assertNotEmpty(galleryOptions)) {
+      const context = selectedItem.parent.children;
+      const currentIndex = context.indexOf(selectedItem);
+
+      const nextIndexGenerator: Record<Direction, (index: number) => number> = {
+        down: (index) => index + galleryOptions.numberOfColumns,
+        left: (index) => index - 1,
+        right: (index) => index + 1,
+        up: (index) => index - galleryOptions.numberOfColumns,
+      };
+
+      const nextIndex = nextIndexGenerator[direction](currentIndex);
+      if (nextIndex < 0) {
+        app.tree.selectedItem = selectedItem.parent;
+      } else if (nextIndex > context.length - 1) {
+        const nextItem = getFollowingItem(selectedItem.parent);
+        if (nextItem) app.tree.selectedItem = nextItem;
+      } else {
+        app.tree.selectedItem = context[nextIndex];
+      }
+    }
+  }
 };
 export const setGalleryColumns = (
   app: AppState,
@@ -189,3 +233,12 @@ const isBoard = (item: Item | undefined): boolean => item?.view === "board";
 const isRoot = (item: Item) => !item.parent;
 
 const isLast = (item: Item): boolean => !getFollowingSibling(item);
+
+const isInGallery = (item: Item) =>
+  item.parent && item.parent.view === "gallery";
+
+const assertNotEmpty = <T>(val: T | undefined): val is T => {
+  if (typeof val === "undefined")
+    throw new Error("Expected value not to be undefined");
+  return true;
+};
