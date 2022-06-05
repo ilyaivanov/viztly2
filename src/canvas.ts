@@ -8,18 +8,23 @@ export const onResize = (cb: () => void) => {
 export const initCanvas = () => {
   const canvas = document.createElement("canvas");
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
   document.body.appendChild(canvas);
 
-  const onResize = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    onResizeCb();
+  const assignDimensions = () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    context.width = width;
+    context.height = height;
+
+    canvas.width = width;
+    canvas.height = height;
   };
 
-  window.addEventListener("resize", onResize);
+  window.addEventListener("resize", () => {
+    assignDimensions();
+    onResizeCb();
+  });
 
   const canvasContext = canvas.getContext("2d")!;
 
@@ -91,12 +96,13 @@ export const initCanvas = () => {
       canvasContext.stroke();
     },
 
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: 0,
+    height: 0,
 
     htmlContext: canvasContext,
   };
 
+  assignDimensions();
   window.ctx = context;
   return context;
 };

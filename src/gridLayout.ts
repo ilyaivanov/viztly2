@@ -55,16 +55,18 @@ const renderGallery = (
   const { galleryImageWidth, galleryImageHeight } = spacings;
   let itemsInRow = 0;
   for (const item of items) {
-    fn(item, x, y);
-    x += galleryImageWidth + 1;
-    itemsInRow += 1;
     if (itemsInRow >= gallery.numberOfColumns) {
       x = gridX;
       y += galleryImageHeight + 1;
       itemsInRow = 0;
     }
+
+    fn(item, x, y);
+    x += galleryImageWidth + 1;
+    itemsInRow += 1;
   }
   gallery.heightInGrid = y - gridY + galleryImageHeight + 2;
+  console.log(gallery.heightInGrid);
   gallery.widthInGrid = gallery.numberOfColumns * (galleryImageWidth + 1) + 1;
   return y - gridY + galleryImageHeight + 2;
 };
