@@ -66,7 +66,6 @@ const renderGallery = (
     itemsInRow += 1;
   }
   gallery.heightInGrid = y - gridY + galleryImageHeight + 2;
-  console.log(gallery.heightInGrid);
   gallery.widthInGrid = gallery.numberOfColumns * (galleryImageWidth + 1) + 1;
   return y - gridY + galleryImageHeight + 2;
 };
@@ -87,8 +86,8 @@ const renderBoardChildren = (
     let xOffset = gridDistanceForText(child.title);
 
     if (hasVisibleChildren(child)) {
-      const subtreeHeight = traverseItems(
-        child.children,
+      const subtreeHeight = layoutChildren(
+        child,
         viewX + 1,
         viewY + 1,
         (item, x, y) => {
