@@ -1,4 +1,7 @@
-import spacings, { colors } from "./spacings";
+import spacings from "./spacings";
+
+import * as colors from "./colors";
+import { getHexColor } from "./animations";
 
 export const viewItem = (
   view: ItemView,
@@ -12,7 +15,10 @@ export const viewItem = (
   const yOffset = 1;
   const { item } = view;
 
-  const color = isSelected ? colors.selected : "#000";
+  const color = getHexColor(
+    isSelected ? colors.selected.currentValue : colors.font.currentValue
+  );
+
   window.ctx.htmlContext.globalAlpha = view.opacity.current;
   if (view.item.view === "gallery" && view.item.isOpen) galleryOutline(view);
 
@@ -21,7 +27,9 @@ export const viewItem = (
   } else {
     window.ctx.outlineCircle(x, y, 3.2, 1, color);
     if (item.children.length > 0) {
-      const filledCircle = isSelected ? colors.selected : "#A39E93";
+      const filledCircle = isSelected
+        ? getHexColor(colors.selected.currentValue)
+        : getHexColor(colors.filledCircle.currentValue);
       window.ctx.fillCircle(x, y, 3.2, filledCircle);
     }
 
@@ -48,7 +56,7 @@ const lineBetween = (view1: ItemView, view2: ItemView) => {
   const ctx = window.ctx.htmlContext;
   const myContext = window.ctx;
   ctx.lineWidth = 2;
-  ctx.strokeStyle = colors.lines;
+  ctx.strokeStyle = getHexColor(colors.line.currentValue);
   ctx.lineJoin = "round";
   ctx.beginPath();
   myContext.moveTo(x1, y1);
@@ -73,7 +81,7 @@ const boardChildtoParentLine = (from: ItemView, to: ItemView) => {
   const ctx = window.ctx.htmlContext;
 
   ctx.lineWidth = 2;
-  ctx.strokeStyle = colors.lines;
+  ctx.strokeStyle = getHexColor(colors.line.currentValue);
   ctx.lineJoin = "round";
   ctx.beginPath();
   myContext.moveTo(x1, y1);
@@ -106,7 +114,7 @@ const galleryOutline = (itemView: ItemView) => {
 
   const ctx = window.ctx.htmlContext;
 
-  ctx.strokeStyle = colors.lines;
+  ctx.strokeStyle = getHexColor(colors.line.currentValue);
   ctx.lineWidth = 2;
 
   const myContext = window.ctx;
@@ -135,7 +143,7 @@ function drawGalleryItem(view: ItemView, isSelected: boolean) {
     y,
     galleryImageWidth * gridSize,
     galleryImageHeight * gridSize,
-    colors.lines
+    getHexColor(colors.line.currentValue)
   );
   if (view.image)
     window.ctx.drawImage(
@@ -151,13 +159,25 @@ function drawGalleryItem(view: ItemView, isSelected: boolean) {
       // colors.lines
     );
   else {
-    window.ctx.fillTextAtMiddle(view.item.title, x + 10, y + 15, "#000");
+    window.ctx.fillTextAtMiddle(
+      view.item.title,
+      x + 10,
+      y + 15,
+      getHexColor(colors.font.currentValue)
+    );
   }
 
   if (isSelected) {
     const width = galleryImageWidth * gridSize;
     const height = galleryImageHeight * gridSize;
-    window.ctx.fillRect(x, y, width, height, 2, colors.selected);
+    window.ctx.fillRect(
+      x,
+      y,
+      width,
+      height,
+      2,
+      getHexColor(colors.selected.currentValue)
+    );
   }
 }
 const youtubeOriginalImageHeight = 90;

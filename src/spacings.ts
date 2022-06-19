@@ -13,9 +13,3 @@ export default {
   galleryImageWidth: 6,
   galleryImageHeight: 4,
 };
-
-export const colors = {
-  lines: "lightGrey",
-  gridPoint: "lightGrey",
-  selected: "blue",
-};

@@ -1,10 +1,12 @@
 import * as actions from "./actions";
-import { onEngineTick } from "./animations";
+import { onEngineTick, getHexColor } from "./animations";
 import { initCanvas, onResize, VIEWPORT_MAX_WIDTH } from "./canvas";
+import { rotateTheme } from "./colors";
 import { drawGrid } from "./gridLayout";
 import { forEachChild } from "./tree";
 import { viewItem } from "./viewItem";
 import viztly from "./viztly.json";
+import * as colors from "./colors";
 
 initCanvas();
 
@@ -25,7 +27,7 @@ const app: AppState = {
 actions.init(app);
 
 const render = () => {
-  window.ctx.clear("#FAF9F7");
+  window.ctx.clear(getHexColor(colors.bgColor.currentValue));
   drawGrid();
 
   for (const view of app.views.values()) {
@@ -45,12 +47,13 @@ document.addEventListener("keydown", (e) => {
     actions.setGalleryColumns(app, app.tree.selectedItem, number);
     e.preventDefault();
   }
-  if (e.code === "ArrowDown") actions.onMovement(app, "down");
-  else if (e.code === "ArrowUp") actions.onMovement(app, "up");
-  else if (e.code === "ArrowRight") actions.onMovement(app, "right");
-  else if (e.code === "ArrowLeft") actions.onMovement(app, "left");
+  if (e.code === "KeyJ") actions.onMovement(app, "down");
+  else if (e.code === "KeyK") actions.onMovement(app, "up");
+  else if (e.code === "KeyL") actions.onMovement(app, "right");
+  else if (e.code === "KeyH") actions.onMovement(app, "left");
   else if (e.code === "KeyG") actions.setSelectedAsGallery(app);
   else if (e.code === "KeyB") actions.setSelectedAsBoard(app);
+  else if (e.code === "KeyR") rotateTheme();
   else if (e.code === "KeyT") actions.setSelectedAsTree(app);
 
   render();

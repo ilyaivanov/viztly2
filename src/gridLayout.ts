@@ -1,5 +1,7 @@
 import { VIEWPORT_MAX_WIDTH } from "./canvas";
-import spacings, { colors } from "./spacings";
+import spacings from "./spacings";
+import * as color from "./colors";
+import { getHexColor } from "./animations";
 
 type LayoutCallback = (item: Item, gridX: number, gridY: number) => void;
 
@@ -26,10 +28,11 @@ const layoutChildrenImp = (
 export const drawGrid = () => {
   const ctx = window.ctx;
 
+  const gridC = getHexColor(color.line.currentValue);
   //drawing 200x100 grid
   for (let gridX = -50; gridX < 50; gridX += 1) {
     for (let gridY = 0; gridY < 100; gridY += 1) {
-      ctx.drawRectAtGridCenter(gridX, gridY, 2, 2, colors.gridPoint);
+      ctx.drawRectAtGridCenter(gridX, gridY, 2, 2, gridC);
     }
   }
 
@@ -40,8 +43,10 @@ export const drawGrid = () => {
   window.ctx.lineTo(0, window.ctx.height);
   window.ctx.moveTo(VIEWPORT_MAX_WIDTH, 0);
   window.ctx.lineTo(VIEWPORT_MAX_WIDTH, window.ctx.height);
-  window.ctx.htmlContext.lineWidth = 3;
-  window.ctx.htmlContext.strokeStyle = "#F2F2F2";
+  window.ctx.htmlContext.lineWidth = 2;
+  window.ctx.htmlContext.strokeStyle = getHexColor(
+    color.centeredLine.currentValue
+  );
   window.ctx.htmlContext.stroke();
 };
 
