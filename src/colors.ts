@@ -4,10 +4,10 @@ const themes = {
   dark: {
     bg: "#1E1E1E",
     line: "#3C413D",
-    font: "#E7E7E7",
+    font: "#FFFFFF",
     selected: "#B1E847",
     gridPoint: "#3C413D",
-    filledCircle: "#A39E93",
+    filledCircle: "#D1D2D3",
     centerColor: "#2C392F",
   },
   light: {

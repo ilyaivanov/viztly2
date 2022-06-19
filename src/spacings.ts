@@ -1,13 +1,10 @@
-const distanceFromOuterCircleToText = 7;
-const circleRadius = 3.2;
-
 //figure out how to
 export default {
-  fontSize: 14,
+  fontSize: 15,
   circleRadius: 3.2,
   circleLineWidth: 1.5,
   textOffsetFromCircleCenter: 10,
-  gridSize: 20,
+  gridSize: 22,
   lineToCircleDistance: 10 - 3.2,
 
   galleryImageWidth: 6,
