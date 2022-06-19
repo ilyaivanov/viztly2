@@ -1,9 +1,10 @@
+import { VIEWPORT_MAX_WIDTH } from "./canvas";
 import spacings, { colors } from "./spacings";
 
 type LayoutCallback = (item: Item, gridX: number, gridY: number) => void;
 
 export const layoutRoot = (root: Item, cb: LayoutCallback) =>
-  layoutChildrenImp(root, 4, 2, cb);
+  layoutChildrenImp(root, 0, 2, cb);
 
 export const layoutChildren = (view: ItemView, cb: LayoutCallback) =>
   layoutChildrenImp(view.item, view.gridX, view.gridY, cb);
@@ -24,12 +25,24 @@ const layoutChildrenImp = (
 
 export const drawGrid = () => {
   const ctx = window.ctx;
-  const { gridSize } = spacings;
-  for (let x = 0; x < ctx.width; x += gridSize) {
-    for (let y = 0; y < ctx.height; y += gridSize) {
-      ctx.drawRect(x - 1, y - 1, 2, 2, colors.gridPoint);
+
+  //drawing 200x100 grid
+  for (let gridX = -50; gridX < 50; gridX += 1) {
+    for (let gridY = 0; gridY < 100; gridY += 1) {
+      ctx.drawRectAtGridCenter(gridX, gridY, 2, 2, colors.gridPoint);
     }
   }
+
+  // vertical lines
+  window.ctx.htmlContext.beginPath();
+
+  window.ctx.moveTo(0, 0);
+  window.ctx.lineTo(0, window.ctx.height);
+  window.ctx.moveTo(VIEWPORT_MAX_WIDTH, 0);
+  window.ctx.lineTo(VIEWPORT_MAX_WIDTH, window.ctx.height);
+  window.ctx.htmlContext.lineWidth = 3;
+  window.ctx.htmlContext.strokeStyle = "#F2F2F2";
+  window.ctx.htmlContext.stroke();
 };
 
 const traverseItems = (

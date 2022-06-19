@@ -1,6 +1,6 @@
 import * as actions from "./actions";
 import { onEngineTick } from "./animations";
-import { initCanvas, onResize } from "./canvas";
+import { initCanvas, onResize, VIEWPORT_MAX_WIDTH } from "./canvas";
 import { drawGrid } from "./gridLayout";
 import { forEachChild } from "./tree";
 import { viewItem } from "./viewItem";
@@ -27,6 +27,7 @@ actions.init(app);
 const render = () => {
   window.ctx.clear("#FAF9F7");
   drawGrid();
+
   for (const view of app.views.values()) {
     const { item } = view;
     viewItem(

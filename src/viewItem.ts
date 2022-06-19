@@ -46,13 +46,14 @@ const lineBetween = (view1: ItemView, view2: ItemView) => {
   const y2 = view2.y.current + circleRadius + lineToCircleDistance;
 
   const ctx = window.ctx.htmlContext;
+  const myContext = window.ctx;
   ctx.lineWidth = 2;
   ctx.strokeStyle = colors.lines;
   ctx.lineJoin = "round";
   ctx.beginPath();
-  ctx.moveTo(x1, y1);
-  ctx.lineTo(x2, y1);
-  ctx.lineTo(x2, y2);
+  myContext.moveTo(x1, y1);
+  myContext.lineTo(x2, y1);
+  myContext.lineTo(x2, y2);
 
   ctx.stroke();
 };
@@ -68,16 +69,17 @@ const boardChildtoParentLine = (from: ItemView, to: ItemView) => {
 
   const middleYPoint = (from.gridY - 1) * gridSize;
 
+  const myContext = window.ctx;
   const ctx = window.ctx.htmlContext;
 
   ctx.lineWidth = 2;
   ctx.strokeStyle = colors.lines;
   ctx.lineJoin = "round";
   ctx.beginPath();
-  ctx.moveTo(x1, y1);
-  ctx.lineTo(x1, middleYPoint);
-  ctx.lineTo(x2, middleYPoint);
-  ctx.lineTo(x2, y2);
+  myContext.moveTo(x1, y1);
+  myContext.lineTo(x1, middleYPoint);
+  myContext.lineTo(x2, middleYPoint);
+  myContext.lineTo(x2, y2);
   ctx.stroke();
 };
 
@@ -106,13 +108,15 @@ const galleryOutline = (itemView: ItemView) => {
 
   ctx.strokeStyle = colors.lines;
   ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(topLeftX, topLeftY);
 
-  ctx.lineTo(rightX, topRightY);
-  ctx.lineTo(rightX, bottomY);
-  ctx.lineTo(LeftX, bottomY);
-  ctx.lineTo(LeftX, topLeftEndX);
+  const myContext = window.ctx;
+  ctx.beginPath();
+  myContext.moveTo(topLeftX, topLeftY);
+
+  myContext.lineTo(rightX, topRightY);
+  myContext.lineTo(rightX, bottomY);
+  myContext.lineTo(LeftX, bottomY);
+  myContext.lineTo(LeftX, topLeftEndX);
   ctx.stroke();
 };
 
@@ -134,7 +138,7 @@ function drawGalleryItem(view: ItemView, isSelected: boolean) {
     colors.lines
   );
   if (view.image)
-    window.ctx.htmlContext.drawImage(
+    window.ctx.drawImage(
       view.image,
       0,
       (youtubeOriginalImageHeight - galleryImageHeight * gridSize) / 2,
