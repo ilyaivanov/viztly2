@@ -2,7 +2,11 @@ import * as actions from "./actions";
 import { onEngineTick, getHexColor } from "./animations";
 import { initCanvas, onResize, VIEWPORT_MAX_WIDTH } from "./canvas";
 import { rotateTheme } from "./colors";
-import { drawGrid } from "./gridLayout";
+import {
+  drawGrid,
+  toggleGridVisibility,
+  toggleLinesVisibility,
+} from "./gridLayout";
 import { forEachChild } from "./tree";
 import { viewItem } from "./viewItem";
 import viztly from "./viztly.json";
@@ -42,6 +46,7 @@ const render = () => {
 };
 
 document.addEventListener("keydown", (e) => {
+  console.log(e.code);
   if (e.code.startsWith("Digit")) {
     const number = parseInt(e.code.substring(5));
     actions.setGalleryColumns(app, app.tree.selectedItem, number);
@@ -55,6 +60,8 @@ document.addEventListener("keydown", (e) => {
   else if (e.code === "KeyB") actions.setSelectedAsBoard(app);
   else if (e.code === "KeyR") rotateTheme();
   else if (e.code === "KeyT") actions.setSelectedAsTree(app);
+  else if (e.code === "BracketLeft") toggleGridVisibility();
+  else if (e.code === "BracketRight") toggleLinesVisibility();
 
   render();
 });

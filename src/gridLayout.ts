@@ -1,7 +1,7 @@
 import { VIEWPORT_MAX_WIDTH } from "./canvas";
 import spacings from "./spacings";
 import * as color from "./colors";
-import { getHexColor } from "./animations";
+import { createAnimatedColor, getHexColor } from "./animations";
 
 type LayoutCallback = (item: Item, gridX: number, gridY: number) => void;
 
@@ -25,29 +25,43 @@ const layoutChildrenImp = (
   return renderer(item.children, gridX, gridY, fn);
 };
 
+let isGridVisible = false;
+let areLinesVisible = false;
+
+export const toggleGridVisibility = () => {
+  isGridVisible = !isGridVisible;
+};
+export const toggleLinesVisibility = () => {
+  areLinesVisible = !areLinesVisible;
+};
+
 export const drawGrid = () => {
   const ctx = window.ctx;
 
-  const gridC = getHexColor(color.line.currentValue);
-  //drawing 200x100 grid
-  for (let gridX = -50; gridX < 50; gridX += 1) {
-    for (let gridY = 0; gridY < 100; gridY += 1) {
-      ctx.drawRectAtGridCenter(gridX, gridY, 2, 2, gridC);
+  if (isGridVisible) {
+    const gridC = getHexColor(color.line.currentValue);
+    //drawing 200x100 grid
+    for (let gridX = -50; gridX < 50; gridX += 1) {
+      for (let gridY = 0; gridY < 100; gridY += 1) {
+        ctx.drawRectAtGridCenter(gridX, gridY, 2, 2, gridC);
+      }
     }
   }
 
-  // vertical lines
-  window.ctx.htmlContext.beginPath();
+  if (areLinesVisible) {
+    // vertical lines
+    window.ctx.htmlContext.beginPath();
 
-  window.ctx.moveTo(0, 0);
-  window.ctx.lineTo(0, window.ctx.height);
-  window.ctx.moveTo(VIEWPORT_MAX_WIDTH, 0);
-  window.ctx.lineTo(VIEWPORT_MAX_WIDTH, window.ctx.height);
-  window.ctx.htmlContext.lineWidth = 2;
-  window.ctx.htmlContext.strokeStyle = getHexColor(
-    color.centeredLine.currentValue
-  );
-  window.ctx.htmlContext.stroke();
+    window.ctx.moveTo(0, 0);
+    window.ctx.lineTo(0, window.ctx.height);
+    window.ctx.moveTo(VIEWPORT_MAX_WIDTH, 0);
+    window.ctx.lineTo(VIEWPORT_MAX_WIDTH, window.ctx.height);
+    window.ctx.htmlContext.lineWidth = 2;
+    window.ctx.htmlContext.strokeStyle = getHexColor(
+      color.centeredLine.currentValue
+    );
+    window.ctx.htmlContext.stroke();
+  }
 };
 
 const traverseItems = (
