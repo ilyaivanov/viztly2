@@ -146,6 +146,9 @@ function drawGalleryItem(view: ItemView, isSelected: boolean) {
       galleryImageHeight * gridSize
       // colors.lines
     );
+  else {
+    window.ctx.fillTextAtMiddle(view.item.title, x + 10, y + 15, "#000");
+  }
 
   if (isSelected) {
     const width = galleryImageWidth * gridSize;

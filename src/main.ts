@@ -2,7 +2,7 @@ import * as actions from "./actions";
 import { onEngineTick } from "./animations";
 import { initCanvas, onResize } from "./canvas";
 import { drawGrid } from "./gridLayout";
-import { forEachChild, forEachParent, getItemByName } from "./tree";
+import { forEachChild } from "./tree";
 import { viewItem } from "./viewItem";
 import viztly from "./viztly.json";
 

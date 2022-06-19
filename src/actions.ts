@@ -1,10 +1,10 @@
 import { appendTo, createAnimatedNumber, switchTo } from "./animations";
-import { layoutChildren } from "./gridLayout";
+import { layoutChildren, layoutRoot } from "./gridLayout";
 import spacings from "./spacings";
 import { forEachOpenChild } from "./tree";
 
 export const init = (app: AppState) => {
-  layoutChildren(app.tree.root, 8, 2, (item, gridX, gridY) =>
+  layoutRoot(app.tree.root, (item, gridX, gridY) =>
     app.views.set(item, createView(item, gridX, gridY))
   );
 };
@@ -47,16 +47,11 @@ const onArrowRight = (app: AppState) => {
     animatePositions(app);
     const view = app.views.get(tree.selectedItem);
     if (view) {
-      layoutChildren(
-        app.tree.selectedItem,
-        view.gridX,
-        view.gridY,
-        (item, gridX, gridY) => {
-          const view = createView(item, gridX + 1, gridY + 1);
-          app.views.set(item, view);
-          fadeIn(view);
-        }
-      );
+      layoutChildren(view, (item, gridX, gridY) => {
+        const view = createView(item, gridX + 1, gridY + 1);
+        app.views.set(item, view);
+        fadeIn(view);
+      });
     }
   } else if (hasChildren(tree.selectedItem))
     tree.selectedItem = tree.selectedItem.children[0];
@@ -158,7 +153,7 @@ export const setGalleryColumns = (
 };
 
 const animatePositions = (app: AppState) => {
-  layoutChildren(app.tree.root, 8, 2, (item, gridX, gridY) => {
+  layoutRoot(app.tree.root, (item, gridX, gridY) => {
     const view = app.views.get(item);
 
     if (view) {

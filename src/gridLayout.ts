@@ -1,10 +1,18 @@
 import spacings, { colors } from "./spacings";
 
-export const layoutChildren = (
+type LayoutCallback = (item: Item, gridX: number, gridY: number) => void;
+
+export const layoutRoot = (root: Item, cb: LayoutCallback) =>
+  layoutChildrenImp(root, 4, 2, cb);
+
+export const layoutChildren = (view: ItemView, cb: LayoutCallback) =>
+  layoutChildrenImp(view.item, view.gridX, view.gridY, cb);
+
+const layoutChildrenImp = (
   item: Item,
   gridX: number,
   gridY: number,
-  fn: A3<Item, number, number>
+  fn: LayoutCallback
 ) => {
   if (item.view === "gallery" && item.galleryOptions)
     return renderGallery(item.galleryOptions, item.children, gridX, gridY, fn);
@@ -28,7 +36,7 @@ const traverseItems = (
   items: Item[],
   gridX: number,
   gridY: number,
-  fn: A3<Item, number, number>
+  fn: LayoutCallback
 ): number =>
   items.reduce((totalGridHeight, child) => {
     const currentGridY = gridY + totalGridHeight;
@@ -38,7 +46,7 @@ const traverseItems = (
       totalGridHeight +
       1 +
       (hasVisibleChildren(child)
-        ? layoutChildren(child, gridX + 1, currentGridY + 1, fn)
+        ? layoutChildrenImp(child, gridX + 1, currentGridY + 1, fn)
         : 0)
     );
   }, 0);
@@ -48,7 +56,7 @@ const renderGallery = (
   items: Item[],
   gridX: number,
   gridY: number,
-  fn: A3<Item, number, number>
+  fn: LayoutCallback
 ) => {
   let x = gridX;
   let y = gridY;
@@ -74,7 +82,7 @@ const renderBoardChildren = (
   items: Item[],
   gridX: number,
   gridY: number,
-  fn: A3<Item, number, number>
+  fn: LayoutCallback
 ) => {
   let maxHeight = 0;
   const viewY = gridY + 1;
@@ -86,7 +94,7 @@ const renderBoardChildren = (
     let xOffset = gridDistanceForText(child.title);
 
     if (hasVisibleChildren(child)) {
-      const subtreeHeight = layoutChildren(
+      const subtreeHeight = layoutChildrenImp(
         child,
         viewX + 1,
         viewY + 1,
@@ -110,8 +118,8 @@ const hasVisibleChildren = (item: Item) =>
   item.isOpen && item.children.length > 0;
 
 // text offset * 2 because it's from beggining and end
-export const textWidthWithMarging = (label: string) =>
+const textWidthWithMarging = (label: string) =>
   window.ctx.getTextWidth(label) + spacings.textOffsetFromCircleCenter * 2;
 
-export const gridDistanceForText = (label: string) =>
+const gridDistanceForText = (label: string) =>
   Math.ceil(textWidthWithMarging(label) / spacings.gridSize);
